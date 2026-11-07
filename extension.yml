@@ -1,0 +1,46 @@
+schema_version: "1.0"
+
+extension:
+  id: "sizing"
+  name: "T-Shirt Sizing Gate"
+  version: "0.1.0"
+  description: "Estimate and approve implementation complexity before coding."
+  author: "Maurizio Pinotti"
+  repository: "https://github.com/mauriziopinotti/spec-kit-sizing"
+  homepage: "https://github.com/mauriziopinotti/spec-kit-sizing"
+  license: "MIT"
+  category: "process"
+  effect: "read-write"
+
+requires:
+  speckit_version: ">=0.1.0"
+  commands:
+    - "speckit.tasks"
+    - "speckit.implement"
+
+provides:
+  commands:
+    - name: "speckit.sizing.estimate"
+      file: "commands/estimate.md"
+      description: "Assess the planned change and request sizing approval"
+    - name: "speckit.sizing.approve"
+      file: "commands/approve.md"
+      description: "Record explicit user approval of the sizing review"
+    - name: "speckit.sizing.guard"
+      file: "commands/guard.md"
+      description: "Verify approval and unchanged documents before implementation"
+
+hooks:
+  after_tasks:
+    command: "speckit.sizing.estimate"
+    optional: false
+    description: "Generate a sizing review after tasks"
+  before_implement:
+    command: "speckit.sizing.guard"
+    optional: false
+    description: "Require valid sizing approval before implementation"
+
+tags:
+  - "sizing"
+  - "quality-gate"
+  - "process"
