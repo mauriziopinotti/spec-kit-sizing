@@ -28,11 +28,33 @@ def fail(message: str) -> None:
 
 def review_metadata(feature: Path) -> tuple[str, str]:
     review = (feature / "size-review.md").read_text(encoding="utf-8")
-    size = re.search(r"^T-Shirt Size:\s*(XS|S|M|L|XL)\s*$", review, re.MULTILINE)
-    status = re.search(r"^Status:\s*(PENDING|APPROVED)\s*$", review, re.MULTILINE)
-    if not size or not status:
-        fail("size-review.md must contain T-Shirt Size: XS|S|M|L|XL and Status: PENDING|APPROVED")
-    return size.group(1), status.group(1)
+    fields = {}
+    for label, values in (("T-Shirt Size", "XS|S|M|L|XL"), ("Status", "PENDING|APPROVED")):
+        lines = [line for line in review.splitlines() if line.startswith(label + ":")]
+        if len(lines) != 1:
+            fail(f"size-review.md must contain exactly one {label}: field")
+        match = re.fullmatch(rf"{label}:[ \t]*({values})[ \t]*", lines[0])
+        if not match:
+            fail(f"Invalid {label}: expected {values} on the same line")
+        fields[label] = match.group(1)
+    return fields["T-Shirt Size"], fields["Status"]
+
+
+def task_content(content: bytes) -> bytes:
+    """Ignore only Markdown task completion markers, outside fenced code blocks."""
+    lines = []
+    fence = None
+    for line in content.splitlines(keepends=True):
+        marker = re.match(rb"^ {0,3}(`{3,}|~{3,})(.*)", line)
+        if fence is None and marker:
+            fence = marker.group(1)
+        elif fence is not None:
+            if marker and marker.group(1)[:1] == fence[:1] and len(marker.group(1)) >= len(fence) and not marker.group(2).strip():
+                fence = None
+        else:
+            line = re.sub(rb"^([ \t]*(?:[-+*]|[0-9]+[.)])[ \t]+)\[[ xX]\](?=[ \t])", rb"\1[ ]", line)
+        lines.append(line)
+    return b"".join(lines)
 
 
 def digests(feature: Path) -> dict[str, str]:
@@ -41,7 +63,10 @@ def digests(feature: Path) -> dict[str, str]:
         path = feature / name
         if not path.is_file():
             fail(f"Missing required file: {path}")
-        out[name] = hashlib.sha256(path.read_bytes()).hexdigest()
+        content = path.read_bytes()
+        if name == "tasks.md":
+            content = task_content(content)
+        out[name] = hashlib.sha256(content).hexdigest()
     return out
 
 
@@ -53,7 +78,10 @@ def read_json(path: Path) -> dict:
     if not path.is_file():
         fail(f"Missing {path.name}; run estimate, then approve")
     try:
-        return json.loads(path.read_text(encoding="utf-8"))
+        record = json.loads(path.read_text(encoding="utf-8"))
+        if not isinstance(record, dict):
+            fail(f"Invalid {path.name}: expected a JSON object")
+        return record
     except (ValueError, OSError) as exc:
         fail(f"Invalid {path.name}: {exc}")
 
@@ -93,10 +121,12 @@ def main() -> None:
             fail("Documents or review changed since estimate; rerun estimate")
         review_file = feature / "size-review.md"
         review_text = review_file.read_text(encoding="utf-8")
-        review_file.write_text(
-            re.sub(r"^Status:[ \t]*PENDING[ \t]*$", "Status: APPROVED", review_text, count=1, flags=re.MULTILINE),
-            encoding="utf-8",
-        )
+        updated, count = re.subn(r"^Status:[ \t]*PENDING[ \t]*$", "Status: APPROVED", review_text, flags=re.MULTILINE)
+        if count != 1:
+            fail("Could not update exactly one Status field")
+        review_file.write_text(updated, encoding="utf-8")
+        if review_metadata(feature) != (size, "APPROVED"):
+            fail("Review status was not updated to APPROVED")
         write_json(feature / APPROVAL, {
             "size": size,
             "approved_at_utc": datetime.now(timezone.utc).isoformat(),
@@ -114,4 +144,7 @@ def main() -> None:
 
 
 if __name__ == "__main__":
-    main()
+    try:
+        main()
+    except (OSError, UnicodeError) as exc:
+        fail(f"Cannot read or write sizing artifacts: {exc}")

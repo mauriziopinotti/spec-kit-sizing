@@ -17,3 +17,5 @@ python3 .specify/extensions/sizing/scripts/sizing_gate.py check "<feature-dir>"
 4. Only if the check succeeds may the standard Spec Kit implementation continue.
 
 A modified `spec.md`, `plan.md`, `tasks.md`, or `size-review.md` invalidates the approval.
+
+Task completion checkbox changes in `tasks.md` are ignored; changes to task descriptions, IDs, ordering, or other document content require a fresh estimate and approval.

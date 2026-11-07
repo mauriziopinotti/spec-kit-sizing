@@ -17,3 +17,5 @@ python3 .specify/extensions/sizing/scripts/sizing_gate.py approve "<feature-dir>
 4. Only after the command exits successfully, report that this exact review was approved. Do not start implementation automatically; the user should trigger the usual `__SPECKIT_COMMAND_IMPLEMENT__` step.
 
 The script refuses approval if planning documents or the review changed after the last sizing estimate.
+
+Task completion checkbox changes in `tasks.md` are ignored; changes to task descriptions, IDs, ordering, or other document content require a fresh estimate and approval.
