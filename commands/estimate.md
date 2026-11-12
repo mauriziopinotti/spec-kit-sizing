@@ -6,6 +6,8 @@ description: "Estimate T-shirt implementation size after tasks, without writing 
 
 This command may be invoked manually or through the `after_tasks` extension hook.
 
+Activate it only after `__SPECKIT_COMMAND_TASKS__` in the current Spec Kit workflow, or when the user explicitly requests this sizing command. Do not estimate ordinary change requests automatically, even if the repository contains `.specify/`, planning documents, a feature branch, or a previous sizing review. The approval requirement below applies only to implementation of the reviewed feature through the Spec Kit workflow; it does not block unrelated requests or activate sizing for future ordinary edits.
+
 ## Locate feature
 
 1. Work from the **repository root** containing `.specify/`.
@@ -88,6 +90,6 @@ Replace `<feature-dir>` with the real path, e.g. `specs/001-example`. If this co
 
 ## Output & stop
 
-Present the size, confidence, main reasons, changed components, risk, and smallest viable approach. Clearly state **NOT APPROVED — implementation must not begin**.
+Present the size, confidence, main reasons, changed components, risk, and smallest viable approach. Clearly state **NOT APPROVED — Spec Kit implementation of this feature must not begin**.
 
 Tell the user to explicitly invoke `__SPECKIT_COMMAND_SIZING_APPROVE__` after reviewing, or ask for a smaller plan. Never run approval automatically. Do not start implementation in this command.

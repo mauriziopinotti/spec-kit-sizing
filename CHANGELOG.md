@@ -1,5 +1,11 @@
 # Changelog
 
+## [Unreleased]
+
+### Fixed
+- Limit automatic sizing and approval checks to the active Spec Kit workflow; ordinary edit requests do not activate the gate
+- Clarify that existing planning artifacts and past reviews do not impose sizing on unrelated requests
+
 ## [0.1.2] - 2026-11-07
 
 ### Changed

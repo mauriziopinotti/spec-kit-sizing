@@ -30,6 +30,8 @@ Sizing weighs file roles, change depth, distinct implementation decisions, coupl
 
 ## Routine
 
+Sizing applies only to the Spec Kit flow (`specify` → `plan` → `tasks` → `implement`), or to explicitly invoked sizing commands. Ordinary requests to change code, tests, configuration, or documentation do not require sizing or approval. Existing Spec Kit files, feature branches, and past reviews do not activate the gate on their own. The gate applies to the feature being implemented through Spec Kit and does not carry over to unrelated requests.
+
 1. Run `speckit.specify`, `speckit.plan`, `speckit.tasks` normally.
 2. `after_tasks` runs the estimate and creates `specs/<feature>/size-review.md` and `.size-review-stage.json`.
 3. Review the proposed XS/S/M/L/XL estimate. If acceptable, explicitly invoke the approval command in your coding-agent chat.
