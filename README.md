@@ -1,6 +1,6 @@
 # Spec Kit T-Shirt Sizing Gate
 
-A Spec Kit extension that adds an AI sizing review after tasks and a pre-implementation approval guard.
+A Spec Kit extension that offers preliminary estimates from change descriptions, an AI sizing review after tasks, and a pre-implementation approval guard.
 
 ## Installation
 
@@ -10,15 +10,16 @@ From an existing Spec Kit project root (must contain `.specify/`), install the p
 
 ```bash
 specify version
-specify extension add sizing --from https://github.com/mauriziopinotti/spec-kit-sizing/archive/refs/tags/v0.1.2.zip
+specify extension add sizing --from https://github.com/mauriziopinotti/spec-kit-sizing/archive/refs/tags/v0.2.0.zip
 specify extension list
 ```
 
-The release command requires the `v0.1.2` tag to be published in the [official repository](https://github.com/mauriziopinotti/spec-kit-sizing).
+The release command requires the `v0.2.0` tag to be published in the [official repository](https://github.com/mauriziopinotti/spec-kit-sizing).
 
 For GitHub Copilot in skills layout, the invocations are:
 
 - `/speckit-sizing-estimate`
+- `/speckit-sizing-quick`
 - `/speckit-sizing-approve`
 - `/speckit-sizing-guard`
 
@@ -27,6 +28,20 @@ Other agents may render commands differently. Check the installed integration an
 ## How sizing works
 
 Sizing weighs file roles, change depth, distinct implementation decisions, coupling, and validation effort. File count is reported for visibility and does not set the size. For example, the same simple string update across 18 locale files remains XS when it introduces no behavior and needs only straightforward validation. Complex localization rules, logic changes, or migrations are weighed by their actual implementation and testing effort.
+
+## Quick estimates
+
+Describe a proposed change to `speckit.sizing.quick` without first running specify, plan, or tasks:
+
+```text
+/speckit.sizing.quick Add CSV export for the currently filtered results
+```
+
+For GitHub Copilot in skills layout, use `/speckit-sizing-quick` with the same description. Command spelling depends on the installed agent integration.
+
+The agent inspects relevant code and returns a preliminary XS–XL size, confidence, reasons, affected components, likely validation, operational risk, assumptions, and the smallest viable approach. It asks focused questions when an answer could materially change the size. If code is unavailable, it estimates from the description and states that limitation. Significant unknowns include conditional alternatives, such as “M; could become L if the API contract must change.”
+
+The command requires no planning documents or feature directory and does not modify files, create review or approval artifacts, activate the approval gate, or begin implementation. It uses the same sizing criteria as `estimate`; a later estimate based on a Spec Kit plan and tasks may revise the preliminary result. Installation still uses a Spec Kit project as described above.
 
 ## Routine
 

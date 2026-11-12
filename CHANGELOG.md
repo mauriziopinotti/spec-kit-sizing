@@ -1,6 +1,9 @@
 # Changelog
 
-## [Unreleased]
+## [0.2.0] - 2026-11-12
+
+### Added
+- Add `speckit.sizing.quick` for preliminary estimates from a change description and relevant code, without planning documents or sizing approval
 
 ### Fixed
 - Limit automatic sizing and approval checks to the active Spec Kit workflow; ordinary edit requests do not activate the gate

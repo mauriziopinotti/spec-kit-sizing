@@ -3,7 +3,7 @@ schema_version: "1.0"
 extension:
   id: "sizing"
   name: "T-Shirt Sizing Gate"
-  version: "0.1.2"
+  version: "0.2.0"
   description: "Estimate and approve implementation complexity before coding."
   author: "Maurizio Pinotti"
   repository: "https://github.com/mauriziopinotti/spec-kit-sizing"
@@ -24,6 +24,9 @@ requires:
 
 provides:
   commands:
+    - name: "speckit.sizing.quick"
+      file: "commands/quick.md"
+      description: "Estimate a described change without planning documents or approval"
     - name: "speckit.sizing.estimate"
       file: "commands/estimate.md"
       description: "Assess the planned change and request sizing approval"
