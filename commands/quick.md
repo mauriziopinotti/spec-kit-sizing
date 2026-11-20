@@ -37,8 +37,10 @@ Return a concise estimate in the conversation:
 ```markdown
 # Preliminary T-Shirt Sizing
 
-T-Shirt Size: [XS/S/M/L/XL]
-Confidence: [LOW/MEDIUM/HIGH]
+| Field | Value |
+| --- | --- |
+| T-Shirt Size | **[XS/S/M/L/XL]** |
+| Confidence | **[LOW/MEDIUM/HIGH]** |
 
 ## Summary
 [Proposed change and current behavior; mention the code inspected or description-only basis]

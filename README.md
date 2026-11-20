@@ -10,11 +10,11 @@ From an existing Spec Kit project root (must contain `.specify/`), install the p
 
 ```bash
 specify version
-specify extension add sizing --from https://github.com/mauriziopinotti/spec-kit-sizing/archive/refs/tags/v0.2.0.zip
+specify extension add sizing --from https://github.com/mauriziopinotti/spec-kit-sizing/archive/refs/tags/v0.2.1.zip
 specify extension list
 ```
 
-The release command requires the `v0.2.0` tag to be published in the [official repository](https://github.com/mauriziopinotti/spec-kit-sizing).
+The release command requires the `v0.2.1` tag to be published in the [official repository](https://github.com/mauriziopinotti/spec-kit-sizing).
 
 For GitHub Copilot in skills layout, the invocations are:
 
@@ -24,6 +24,19 @@ For GitHub Copilot in skills layout, the invocations are:
 - `/speckit-sizing-guard`
 
 Other agents may render commands differently. Check the installed integration and its generated command files.
+
+## Updating
+
+From the root of each Spec Kit project, reinstall the published version:
+
+```bash
+specify extension add sizing --from https://github.com/mauriziopinotti/spec-kit-sizing/archive/refs/tags/v0.2.1.zip --force
+specify extension list
+```
+
+This works immediately, including before the community catalog is updated. If your configured catalog contains the new version, you can also use `specify extension update sizing`.
+
+Existing reviews remain compatible. The metadata table appears when generating a new estimate; regenerating a review requires explicit approval again before implementation.
 
 ## How sizing works
 

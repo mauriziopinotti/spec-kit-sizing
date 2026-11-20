@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.2.1] - 2026-11-20
+
+### Fixed
+- Render sizing metadata as a table with bold values in reviews and quick estimates
+- Support table metadata in the approval gate while retaining compatibility with existing plain-text reviews
+
 ## [0.2.0] - 2026-11-12
 
 ### Added

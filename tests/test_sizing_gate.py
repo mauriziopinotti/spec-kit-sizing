@@ -101,6 +101,24 @@ class GateTests(unittest.TestCase):
         self.review.write_bytes(b'T-Shirt Size: M\r\nStatus: PENDING\r\nConfidence: MEDIUM\r\n')
         self.approve()
 
+    def test_table_review_approval(self):
+        template = (SCRIPT.parents[1] / 'commands/estimate.md').read_text()
+        review = template.split('```markdown\n', 1)[1].split('```', 1)[0]
+        self.review.write_text(review)
+        self.approve()
+        self.assertEqual(self.review.read_text(), review.replace('**PENDING**', '**APPROVED**'))
+
+    def test_invalid_or_duplicate_table_metadata_is_rejected(self):
+        for content in (
+            '| T-Shirt Size | **M** |\n| Status | **UNKNOWN** |\n',
+            '| T-Shirt Size | **M** |\n| Status | **PENDING** |\nStatus: PENDING\n',
+            '| T-Shirt Size | **M** |\n| T-Shirt Size | **XL** |\n| Status | **PENDING** |\n',
+            '| T-Shirt Size | **M** |\n| Status | **PENDING** | extra |\n',
+        ):
+            with self.subTest(content=content):
+                self.review.write_text(content)
+                self.run_gate('stage', False)
+
 
 if __name__ == '__main__':
     unittest.main()

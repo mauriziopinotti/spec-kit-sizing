@@ -47,14 +47,16 @@ Explain which file groups are lightweight repetitions and which drive the estima
 
 ## Write the review
 
-Create or replace `<feature-dir>/size-review.md` with exactly these machine-readable top lines, followed by a concise human-readable review:
+Create or replace `<feature-dir>/size-review.md` with this metadata table, followed by a concise human-readable review:
 
 ```markdown
 # T-Shirt Sizing Review
 
-T-Shirt Size: M
-Status: PENDING
-Confidence: MEDIUM
+| Field | Value |
+| --- | --- |
+| T-Shirt Size | **M** |
+| Status | **PENDING** |
+| Confidence | **MEDIUM** |
 
 ## Summary
 [What needs to change]
@@ -78,7 +80,7 @@ Confidence: MEDIUM
 [Missing information or "None"]
 ```
 
-Replace the example size/confidence with your actual estimate. Keep the top three fields `T-Shirt Size:`, `Status:` and `Confidence:` in the same format; `Status` must be `PENDING`.
+Replace the example size/confidence with your actual estimate. Keep the table field names `T-Shirt Size`, `Status` and `Confidence` and the bold values in exactly this format; `Status` must be `PENDING`. Do not duplicate these metadata fields elsewhere in the review.
 
 Next, from the repository root **run**:
 

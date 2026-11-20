@@ -26,17 +26,22 @@ def fail(message: str) -> None:
     raise SystemExit(1)
 
 
+def metadata_pattern(label: str, values: str) -> str:
+    return rf"^(?:{label}:[ \t]*({values})[ \t]*|\|[ \t]*{label}[ \t]*\|[ \t]*\*\*({values})\*\*[ \t]*\|[ \t]*)$"
+
+
 def review_metadata(feature: Path) -> tuple[str, str]:
     review = (feature / "size-review.md").read_text(encoding="utf-8")
     fields = {}
     for label, values in (("T-Shirt Size", "XS|S|M|L|XL"), ("Status", "PENDING|APPROVED")):
-        lines = [line for line in review.splitlines() if line.startswith(label + ":")]
+        lines = [line for line in review.splitlines()
+                 if line.startswith(label + ":") or re.match(rf"^\|[ \t]*{label}[ \t]*\|", line)]
         if len(lines) != 1:
             fail(f"size-review.md must contain exactly one {label}: field")
-        match = re.fullmatch(rf"{label}:[ \t]*({values})[ \t]*", lines[0])
+        match = re.fullmatch(metadata_pattern(label, values), lines[0])
         if not match:
             fail(f"Invalid {label}: expected {values} on the same line")
-        fields[label] = match.group(1)
+        fields[label] = match.group(1) or match.group(2)
     return fields["T-Shirt Size"], fields["Status"]
 
 
@@ -121,7 +126,11 @@ def main() -> None:
             fail("Documents or review changed since estimate; rerun estimate")
         review_file = feature / "size-review.md"
         review_text = review_file.read_text(encoding="utf-8")
-        updated, count = re.subn(r"^Status:[ \t]*PENDING[ \t]*$", "Status: APPROVED", review_text, flags=re.MULTILINE)
+        updated, count = re.subn(
+            metadata_pattern("Status", "PENDING"),
+            lambda match: match.group(0).replace("PENDING", "APPROVED"),
+            review_text, flags=re.MULTILINE,
+        )
         if count != 1:
             fail("Could not update exactly one Status field")
         review_file.write_text(updated, encoding="utf-8")

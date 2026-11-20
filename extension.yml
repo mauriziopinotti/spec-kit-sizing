@@ -3,7 +3,7 @@ schema_version: "1.0"
 extension:
   id: "sizing"
   name: "T-Shirt Sizing Gate"
-  version: "0.2.0"
+  version: "0.2.1"
   description: "Estimate and approve implementation complexity before coding."
   author: "Maurizio Pinotti"
   repository: "https://github.com/mauriziopinotti/spec-kit-sizing"
